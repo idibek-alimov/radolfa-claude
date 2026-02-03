@@ -4,12 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
  * Incremental sync endpoint, intended to be called by an ERPNext webhook or a
  * scheduled poller on the ERP side.
  * <p>
- * A shared secret ({@code X-Sync-Api-Key} header) guards the endpoint.
- * Full role-based security (SYSTEM role + JWT) is layered on in Prompt 05.
+ * Access is restricted to the {@code SYSTEM} role via Spring Security
+ * ({@link com.radolfa.config.SecurityConfig}).  The
+ * {@link com.radolfa.security.JwtAuthenticationFilter} grants that role either
+ * through a valid JWT or through the {@code X-Sync-Api-Key} header.
  * </p>
  */
 @RestController
@@ -27,9 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class SyncController {
 
     private final SyncService syncService;
-
-    @Value("${sync.api-key}")
-    private String syncApiKey;
 
     public SyncController(SyncService syncService) {
         this.syncService = syncService;
@@ -42,15 +38,7 @@ public class SyncController {
      */
     @PostMapping("/products")
     public ResponseEntity<Map<String, Object>> syncProducts(
-            @RequestHeader(value = "X-Sync-Api-Key", required = false) String apiKey,
             @RequestBody List<ErpProductDto> products) {
-
-        if (!syncApiKey.equals(apiKey)) {
-            log.warn("SyncController: rejected request — invalid or missing API key.");
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid or missing API key"));
-        }
 
         products.forEach(syncService::upsertProduct);
 

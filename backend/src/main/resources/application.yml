@@ -60,6 +60,16 @@ erp:
 sync:
   api-key: REPLACE_ME
 
+# ------------------------------------
+# JWT & CORS
+# ------------------------------------
+security:
+  jwt:
+    secret: REPLACE_ME_with_at_least_32_characters_long_secret_key
+    expiration-ms: 86400000          # 24 h
+  cors:
+    allowed-origin: http://localhost:3000
+
 server:
   port: 8080
 
