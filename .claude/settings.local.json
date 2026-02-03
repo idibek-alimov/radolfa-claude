@@ -3,7 +3,11 @@
     "allow": [
       "Skill(keybindings-help)",
       "Bash(mvn:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "WebFetch(domain:mvnrepository.com)",
+      "Bash(node --version)",
+      "Bash(npm:*)",
+      "Bash(npx create-next-app@14:*)"
     ]
   }
 }
