@@ -23,6 +23,11 @@ spring:
   elasticsearch:
     uris: http://localhost:9200
 
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
   # Spring Batch metadata tables are auto-created by Spring Boot.
   # Flyway does not manage them; this is intentional.
   batch:
@@ -30,6 +35,14 @@ spring:
       initialize-schema: always
     job:
       enabled: false   # Jobs are triggered by the scheduler or the sync API, not on startup
+
+# ------------------------------------
+# AWS S3 – image storage
+# ------------------------------------
+aws:
+  s3:
+    bucket: REPLACE_ME       # Target S3 bucket name
+    region: us-east-1        # AWS region; must match the bucket's region
 
 # ------------------------------------
 # ERPNext API client
