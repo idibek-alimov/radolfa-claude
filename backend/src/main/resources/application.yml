@@ -28,6 +28,24 @@ spring:
   batch:
     jdbc:
       initialize-schema: always
+    job:
+      enabled: false   # Jobs are triggered by the scheduler or the sync API, not on startup
+
+# ------------------------------------
+# ERPNext API client
+# ------------------------------------
+erp:
+  api:
+    base-url: http://your-erpnext-host:8000   # Replace with actual ERPNext URL
+    api-key: REPLACE_ME
+    api-secret: REPLACE_ME
+    page-size: 100
+
+# ------------------------------------
+# Shared secret for POST /api/v1/sync/products
+# ------------------------------------
+sync:
+  api-key: REPLACE_ME
 
 server:
   port: 8080

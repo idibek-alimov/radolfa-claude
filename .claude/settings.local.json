@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Skill(keybindings-help)",
-      "Bash(mvn:*)"
+      "Bash(mvn:*)",
+      "Bash(grep:*)"
     ]
   }
 }
