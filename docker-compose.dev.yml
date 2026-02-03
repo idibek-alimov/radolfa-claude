@@ -1,0 +1,48 @@
+# ============================================================
+# Local development infrastructure for Radolfa backend
+# ============================================================
+# Usage:
+#   docker compose -f docker-compose.dev.yml up -d
+#   docker compose -f docker-compose.dev.yml down
+# ============================================================
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: radolfa-postgres-dev
+    environment:
+      POSTGRES_DB: radolfa
+      POSTGRES_USER: radolfa_user
+      POSTGRES_PASSWORD: radolfa_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U radolfa_user -d radolfa"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: radolfa-es-dev
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.monitoring.elasticsearch.collection.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es_dev_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_dev_data:
+  es_dev_data:

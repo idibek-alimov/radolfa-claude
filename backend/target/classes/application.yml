@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/radolfa
+    username: radolfa_user
+    password: radolfa_pass
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_logger_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  elasticsearch:
+    uris: http://localhost:9200
+
+  # Spring Batch metadata tables are auto-created by Spring Boot.
+  # Flyway does not manage them; this is intentional.
+  batch:
+    jdbc:
+      initialize-schema: always
+
+server:
+  port: 8080
+
+actuator:
+  web:
+    exposure:
+      include: health, info
